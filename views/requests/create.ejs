@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Request Asset | IT Portal</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <%- include('../partials/navbar') %>
+
+  <div class="page-container">
+    <h2>📦 Request Asset</h2>
+
+    <% if (error.length > 0) { %>
+      <div class="alert error"><%= error %></div>
+    <% } %>
+
+    <div class="form-card">
+      <form action="/requests/create" method="POST">
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Asset Type *</label>
+            <select name="assetType" required>
+              <option value="">— Select Asset Type —</option>
+              <option value="Laptop">Laptop</option>
+              <option value="Desktop">Desktop</option>
+              <option value="Monitor">Monitor</option>
+              <option value="Printer">Printer</option>
+              <option value="Keyboard">Keyboard</option>
+              <option value="Mouse">Mouse</option>
+              <option value="Headset">Headset</option>
+              <option value="Software License">Software License</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Quantity</label>
+            <input type="number" name="quantity" value="1" min="1" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Reason / Justification</label>
+          <textarea name="reason" placeholder="Why do you need this asset..." rows="4"></textarea>
+        </div>
+
+        <div style="display:flex; gap:1rem">
+          <button type="submit" class="btn blue">📦 Submit Request</button>
+          <a href="/requests" class="btn" style="background:#f0f0f0; color:#555">Cancel</a>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+</body>
+</html>

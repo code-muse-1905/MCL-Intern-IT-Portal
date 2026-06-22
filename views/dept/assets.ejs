@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Department Assets | IT Portal</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <%- include('../partials/navbar') %>
+
+  <div class="page-container">
+    <div class="page-header">
+      <h2>📦 <%= user.department %> Department Assets</h2>
+    </div>
+
+    <% if (success.length > 0) { %>
+      <div class="alert success"><%= success %></div>
+    <% } %>
+
+    <table class="table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Serial Number</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if (assets.length === 0) { %>
+          <tr>
+            <td colspan="5" style="text-align:center; color:#888">No assets found</td>
+          </tr>
+        <% } %>
+        <% assets.forEach((asset, i) => { %>
+          <tr>
+            <td><%= i + 1 %></td>
+            <td><a href="/assets/<%= asset.id %>" style="color:#667eea; font-weight:600"><%= asset.name %></a></td>
+            <td><%= asset.type %></td>
+            <td><%= asset.serialNumber || '-' %></td>
+            <td><span class="badge <%= asset.status %>"><%= asset.status %></span></td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+
+</body>
+</html>

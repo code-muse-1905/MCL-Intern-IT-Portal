@@ -1,0 +1,37 @@
+<nav class="navbar">
+  <div class="nav-brand">
+    <img src="/images/mcllogo.jpeg" alt="Logo" class="nav-logo" />
+  </div>
+  <div class="nav-links">
+    <a href="/profile">👤 <%= user.name %></a>
+
+    <% if (user.role === 'superadmin') { %>
+      <a href="/superadmin">Super Admin</a>
+      <a href="/superadmin/departments">Departments</a>
+      <a href="/superadmin/users">Users</a>
+      <a href="/assets">Assets</a>
+      <a href="/tickets">Tickets</a>
+      <a href="/documents">Documents</a>
+      <a href="/superadmin/helpdesk">Helpdesk</a>
+      <a href="/reports">Reports</a>
+
+    <% } else if (user.role === 'admin') { %>
+      <a href="/dashboard">Dashboard</a>
+      <a href="/dept/users">My Dept</a>
+      <a href="/assets">Assets</a>
+      <a href="/tickets">Tickets</a>
+      <a href="/dept/helpdesk">Helpdesk</a>
+      <a href="/documents">Documents</a>
+
+    <% } else { %>
+      <a href="/dashboard">Dashboard</a>
+      <a href="/requests">My Requests</a>
+      <a href="/tickets">My Tickets</a>
+      <a href="/documents">Documents</a>
+      <a href="/profile">Profile</a>
+
+    <% } %>
+
+    <a href="/logout" class="logout">Logout</a>
+  </div>
+</nav>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Department Tickets | IT Portal</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <%- include('../partials/navbar') %>
+
+  <div class="page-container">
+    <div class="page-header">
+      <h2>🎫 <%= user.department %> Department Tickets</h2>
+    </div>
+
+    <% if (success.length > 0) { %>
+      <div class="alert success"><%= success %></div>
+    <% } %>
+
+    <table class="table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Title</th>
+          <th>Priority</th>
+          <th>Status</th>
+          <th>Raised By</th>
+          <th>Date</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if (tickets.length === 0) { %>
+          <tr>
+            <td colspan="7" style="text-align:center; color:#888">No tickets found</td>
+          </tr>
+        <% } %>
+        <% tickets.forEach((ticket, i) => { %>
+          <tr>
+            <td>TKT-<%= String(ticket.id).padStart(4, '0') %></td>
+            <td><%= ticket.title %></td>
+            <td><span class="badge <%= ticket.priority %>"><%= ticket.priority %></span></td>
+            <td><span class="badge <%= ticket.status %>"><%= ticket.status %></span></td>
+            <td><%= ticket.raisedByUser ? ticket.raisedByUser.name : '-' %></td>
+            <td><%= new Date(ticket.createdAt).toLocaleDateString() %></td>
+            <td>
+              <a href="/tickets/<%= ticket.id %>" class="btn-sm blue">View</a>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>My Requests | IT Portal</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <%- include('../partials/navbar') %>
+
+  <div class="page-container">
+    <div class="page-header">
+      <h2>📦 My Asset Requests</h2>
+      <a href="/requests/create" class="btn green">+ New Request</a>
+    </div>
+
+    <% if (success.length > 0) { %>
+      <div class="alert success"><%= success %></div>
+    <% } %>
+    <% if (error.length > 0) { %>
+      <div class="alert error"><%= error %></div>
+    <% } %>
+
+    <table class="table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Asset Type</th>
+          <th>Quantity</th>
+          <th>Reason</th>
+          <th>Status</th>
+          <th>Assigned Asset</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if (requests.length === 0) { %>
+          <tr>
+            <td colspan="7" style="text-align:center; color:#888">No requests found</td>
+          </tr>
+        <% } %>
+        <% requests.forEach((r, i) => { %>
+          <tr>
+            <td><%= i + 1 %></td>
+            <td><%= r.assetType %></td>
+            <td><%= r.quantity %></td>
+            <td><%= r.reason || '-' %></td>
+            <td><span class="badge <%= r.status === 'pending' ? 'medium' : r.status === 'rejected' ? 'critical' : 'available' %>"><%= r.status %></span></td>
+            <td><%= r.assignedAsset ? r.assignedAsset.name + ' (' + r.assignedAsset.serialNumber + ')' : '-' %></td>
+            <td><%= new Date(r.createdAt).toLocaleDateString() %></td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+
+</body>
+</html>

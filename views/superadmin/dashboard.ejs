@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Super Admin | IT Portal</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+  <%- include('../partials/navbar') %>
+
+  <div class="page-container">
+    <h2>🔧 Super Admin Panel</h2>
+    <p style="color:#888; margin-bottom:2rem">Full system control</p>
+
+    <% if (success.length > 0) { %>
+      <div class="alert success"><%= success %></div>
+    <% } %>
+    <% if (error.length > 0) { %>
+      <div class="alert error"><%= error %></div>
+    <% } %>
+
+    <!-- STAT CARDS -->
+    <div class="cards">
+      <div class="card blue">
+        <h3><%= totalUsers %></h3>
+        <p>Total Users</p>
+      </div>
+      <div class="card red">
+        <h3><%= openTickets %></h3>
+        <p>Open Tickets</p>
+      </div>
+      <div class="card green">
+        <h3><%= totalAssets %></h3>
+        <p>Total Assets</p>
+      </div>
+      <div class="card orange">
+        <h3><%= totalDepartments %></h3>
+        <p>Departments</p>
+      </div>
+    </div>
+
+    <!-- CHARTS ROW -->
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:2rem; margin-top:2rem">
+
+      <!-- DOUGHNUT — Asset Status Distribution -->
+      <div class="form-card" style="padding:1.5rem">
+        <h3 style="margin-bottom:1rem">🍩 Asset Status Distribution</h3>
+        <canvas id="assetDoughnut" height="250"></canvas>
+      </div>
+
+      <!-- BAR — Assets by Department -->
+      <div class="form-card" style="padding:1.5rem">
+        <h3 style="margin-bottom:1rem">📊 Assets by Department</h3>
+        <canvas id="assetBar" height="250"></canvas>
+      </div>
+
+    </div>
+
+    <!-- DEPARTMENT OVERVIEW TABLE -->
+    <div class="quick-links" style="margin-top:2rem">
+      <h3>Department Overview</h3>
+      <table class="table" style="margin-top:1rem">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Department</th>
+            <th>Code</th>
+            <th>Total Users</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% departments.forEach((dept, i) => { %>
+            <tr>
+              <td><%= i + 1 %></td>
+              <td><%= dept.name %></td>
+              <td><%= dept.code || '-' %></td>
+              <td><%= dept.users ? dept.users.length : 0 %></td>
+              <td>
+                <a href="/superadmin/departments" class="btn-sm blue">Manage</a>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- QUICK ACTIONS -->
+    <div class="quick-links" style="margin-top:2rem">
+      <h3>Quick Actions</h3>
+      <div class="links">
+        <a href="/superadmin/departments" class="btn blue">🏢 Manage Departments</a>
+        <a href="/superadmin/users" class="btn green">👥 Manage Users</a>
+        <a href="/assets" class="btn orange">📦 All Assets</a>
+        <a href="/tickets" class="btn red">🎫 All Tickets</a>
+        <a href="/superadmin/helpdesk" class="btn blue">🎫 Helpdesk</a>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // ── DOUGHNUT — Asset Status Distribution ──
+    new Chart(document.getElementById('assetDoughnut'), {
+      type: 'doughnut',
+      data: {
+        labels: ['Available', 'Assigned', 'Maintenance', 'Retired'],
+        datasets: [{
+          data: [
+            <%= availableAssets %>,
+            <%= assignedAssets %>,
+            <%= maintenanceAssets %>,
+            <%= retiredAssets %>
+          ],
+          backgroundColor: ['#43D9A2', '#6C63FF', '#FFA94D', '#FF6B6B'],
+          borderWidth: 2,
+          borderColor: '#fff'
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: {
+            position: 'bottom',
+            labels: { padding: 15, font: { size: 12 } }
+          }
+        }
+      }
+    });
+
+    // ── BAR — Assets by Department ────────────
+    const deptNames = <%- JSON.stringify(assetsByDept.map(d => d.name)) %>;
+    const deptAssets = <%- JSON.stringify(assetsByDept.map(d => d.count)) %>;
+
+    new Chart(document.getElementById('assetBar'), {
+      type: 'bar',
+      data: {
+        labels: deptNames,
+        datasets: [{
+          label: 'Assets',
+          data: deptAssets,
+          backgroundColor: [
+            '#6C63FF','#43D9A2','#FF6B6B',
+            '#FFA94D','#4DABF7','#F06595',
+            '#74C0FC','#A9E34B'
+          ],
+          borderRadius: 6,
+          borderWidth: 0
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { display: false } },
+        scales: {
+          y: {
+            beginAtZero: true,
+            ticks: { stepSize: 1 },
+            grid: { color: '#f0f0f0' }
+          },
+          x: { grid: { display: false } }
+        }
+      }
+    });
+  </script>
+
+</body>
+</html>

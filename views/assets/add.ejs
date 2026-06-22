@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Add Asset | IT Portal</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+ <%- include('../partials/navbar') %>
+
+  <div class="page-container">
+    <h2>➕ Add New Asset</h2>
+
+    <% if (error.length > 0) { %>
+      <div class="alert error"><%= error %></div>
+    <% } %>
+
+    <div class="form-card">
+      <form action="/assets/add/new" method="POST">
+
+        <div class="form-group">
+          <label>Asset Name</label>
+          <input type="text" name="name" placeholder="e.g. Dell Laptop" required />
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Type</label>
+            <select name="type" required>
+              <option value="hardware">Hardware</option>
+              <option value="software">Software</option>
+              <option value="network">Network</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Serial Number</label>
+            <input type="text" name="serialNumber" placeholder="e.g. SN123456" />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Status</label>
+            <select name="status" id="statusSelect">
+              <option value="available">Available</option>
+              <option value="assigned">Assigned</option>
+              <option value="maintenance">Maintenance</option>
+              <option value="retired">Retired</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Department</label>
+            <input type="text" name="department" placeholder="e.g. IT" />
+          </div>
+        </div>
+
+        <!-- ASSIGN TO USER — shown only when status = assigned -->
+        <div class="form-group" id="assignToGroup">
+          <label>Assign To (optional)</label>
+          <select name="assignedTo">
+            <option value="">— Select User —</option>
+            <% users.forEach(u => { %>
+              <option value="<%= u.id %>"><%= u.name %> (<%= u.department || '-' %>)</option>
+            <% }) %>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Purchase Date</label>
+          <input type="date" name="purchaseDate" />
+        </div>
+
+        <div class="form-group">
+          <label>Description</label>
+          <textarea name="description" placeholder="Optional description..." rows="3"></textarea>
+        </div>
+
+        <button type="submit" class="btn blue">Add Asset</button>
+        <a href="/assets" class="btn red">Cancel</a>
+
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // Show/hide assign dropdown based on status
+    const statusSelect = document.getElementById('statusSelect');
+    const assignToGroup = document.getElementById('assignToGroup');
+
+    function toggleAssignField() {
+      assignToGroup.style.display = statusSelect.value === 'assigned' ? 'block' : 'none';
+    }
+
+    statusSelect.addEventListener('change', toggleAssignField);
+    toggleAssignField(); // run on page load
+  </script>
+
+</body>
+</html>

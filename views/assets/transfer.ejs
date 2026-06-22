@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Transfer Asset | IT Portal</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+ <%- include('../partials/navbar') %>
+
+  <div class="page-container">
+    <h2>🔄 Transfer Asset</h2>
+
+    <% if (error.length > 0) { %>
+      <div class="alert error"><%= error %></div>
+    <% } %>
+
+    <div class="form-card">
+      <table class="detail-table" style="margin-bottom:1.5rem">
+        <tr>
+          <th>Asset Name</th>
+          <td><%= asset.name %></td>
+        </tr>
+        <tr>
+          <th>Serial Number</th>
+          <td><%= asset.serialNumber || '-' %></td>
+        </tr>
+        <tr>
+          <th>Currently Assigned To</th>
+          <td><%= asset.assignedUser ? asset.assignedUser.name : 'Unassigned' %></td>
+        </tr>
+      </table>
+
+      <form action="/assets/transfer/<%= asset.id %>" method="POST">
+
+        <div class="form-group">
+          <label>Transfer To</label>
+          <select name="toUserId" required>
+            <option value="">Select User</option>
+            <% users.forEach(u => { %>
+              <option value="<%= u.id %>"><%= u.name %> (<%= u.role %>)</option>
+            <% }) %>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Transfer Date</label>
+          <input type="date" name="transferDate" required />
+        </div>
+
+        <div class="form-group">
+          <label>Reason</label>
+          <textarea name="reason" placeholder="Reason for transfer..." rows="3"></textarea>
+        </div>
+
+        <button type="submit" class="btn blue">Transfer Asset</button>
+        <a href="/assets" class="btn red">Cancel</a>
+
+      </form>
+    </div>
+  </div>
+
+</body>
+</html>

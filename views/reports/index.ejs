@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Reports | IT Portal</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <%- include('../partials/navbar') %>
+  <div class="page-container">
+    <div class="page-header">
+      <h2>📊 Reports</h2>
+    </div>
+
+    <div style="display:grid; grid-template-columns: repeat(3,1fr); gap:1.5rem; margin-top:1rem">
+
+      <a href="/reports/assets" style="text-decoration:none">
+        <div class="dept-card" style="text-align:center; padding:2.5rem 1.5rem">
+          <div style="font-size:3rem; margin-bottom:1rem">📦</div>
+          <h3 style="color:var(--text-main); margin-bottom:0.5rem">Asset Report</h3>
+          <p style="color:var(--text-muted); font-size:0.9rem">Full inventory with status, department and assignment details</p>
+          <div style="margin-top:1.5rem">
+            <span class="btn blue" style="width:100%; display:block; text-align:center">View Report →</span>
+          </div>
+        </div>
+      </a>
+
+      <a href="/reports/users" style="text-decoration:none">
+        <div class="dept-card" style="text-align:center; padding:2.5rem 1.5rem">
+          <div style="font-size:3rem; margin-bottom:1rem">👥</div>
+          <h3 style="color:var(--text-main); margin-bottom:0.5rem">User Report</h3>
+          <p style="color:var(--text-muted); font-size:0.9rem">All users with roles, departments and active status</p>
+          <div style="margin-top:1.5rem">
+            <span class="btn green" style="width:100%; display:block; text-align:center">View Report →</span>
+          </div>
+        </div>
+      </a>
+
+      <a href="/reports/tickets" style="text-decoration:none">
+        <div class="dept-card" style="text-align:center; padding:2.5rem 1.5rem">
+          <div style="font-size:3rem; margin-bottom:1rem">🎫</div>
+          <h3 style="color:var(--text-main); margin-bottom:0.5rem">Ticket Report</h3>
+          <p style="color:var(--text-muted); font-size:0.9rem">All helpdesk tickets with priority, status and resolution</p>
+          <div style="margin-top:1.5rem">
+            <span class="btn orange" style="width:100%; display:block; text-align:center">View Report →</span>
+          </div>
+        </div>
+      </a>
+
+    </div>
+  </div>
+</body>
+</html>

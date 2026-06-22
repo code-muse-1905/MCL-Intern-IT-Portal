@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Asset Report | IT Portal</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    @media print {
+      .no-print { display: none !important; }
+      .page-container { padding: 0; }
+      body { background: white; }
+    }
+  </style>
+</head>
+<body>
+  <%- include('../partials/navbar') %>
+  <div class="page-container">
+
+    <!-- HEADER -->
+    <div class="page-header no-print">
+      <h2>📦 Asset Inventory Report</h2>
+      <div style="display:flex; gap:1rem">
+        <a href="/reports" class="btn" style="background:#f0f0f0; color:#555">← Back</a>
+        <button onclick="window.print()" class="btn blue">🖨️ Print / Save PDF</button>
+      </div>
+    </div>
+
+    <!-- PRINT HEADER -->
+    <div style="display:none" class="print-header">
+      <h2 style="font-size:1.5rem; margin-bottom:0.25rem">Asset Inventory Report</h2>
+      <p style="color:#666; font-size:0.9rem">Generated: <%= new Date().toLocaleDateString('en-IN', { day:'numeric', month:'long', year:'numeric' }) %></p>
+      <hr style="margin: 1rem 0">
+    </div>
+
+    <!-- FILTER -->
+    <form method="GET" action="/reports/assets" class="no-print"
+      style="display:flex; gap:1rem; margin-bottom:2rem; align-items:center">
+      <select name="department"
+        style="padding:0.6rem 1rem; border:1px solid #ddd; border-radius:8px; font-size:0.9rem">
+        <option value="all" <%= selectedDept === 'all' ? 'selected' : '' %>>All Departments</option>
+        <% departments.forEach(d => { %>
+          <option value="<%= d.name %>" <%= selectedDept === d.name ? 'selected' : '' %>><%= d.name %></option>
+        <% }) %>
+      </select>
+      <button type="submit" class="btn blue">Filter</button>
+      <a href="/reports/assets" class="btn" style="background:#f0f0f0; color:#555">Clear</a>
+    </form>
+
+    <!-- SUMMARY CARDS -->
+    <div class="cards" style="margin-bottom:2rem">
+      <div class="card blue">
+        <h3><%= totalAssets %></h3>
+        <p>Total Assets</p>
+      </div>
+      <div class="card green">
+        <h3><%= availableAssets %></h3>
+        <p>Available</p>
+      </div>
+      <div class="card orange">
+        <h3><%= assignedAssets %></h3>
+        <p>Assigned</p>
+      </div>
+      <div class="card red">
+        <h3><%= maintenanceAssets %></h3>
+        <p>Maintenance</p>
+      </div>
+    </div>
+
+    <!-- GENERATED DATE -->
+    <p style="color:var(--text-muted); font-size:0.85rem; margin-bottom:1rem; text-align:right">
+      Generated: <%= new Date().toLocaleDateString('en-IN', { day:'numeric', month:'long', year:'numeric' }) %>
+    </p>
+
+    <!-- TABLE -->
+    <table class="table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Asset Name</th>
+          <th>Type</th>
+          <th>Serial Number</th>
+          <th>Department</th>
+          <th>Assigned To</th>
+          <th>Purchase Date</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if (assets.length === 0) { %>
+          <tr>
+            <td colspan="8" style="text-align:center; color:#888">No assets found</td>
+          </tr>
+        <% } %>
+        <% assets.forEach((a, i) => { %>
+          <tr>
+            <td><%= i + 1 %></td>
+            <td><strong><%= a.name %></strong></td>
+            <td><%= a.type %></td>
+            <td><%= a.serialNumber || '-' %></td>
+            <td><%= a.department || '-' %></td>
+            <td><%= a.assignedUser ? a.assignedUser.name : '—' %></td>
+            <td><%= a.purchaseDate ? new Date(a.purchaseDate).toLocaleDateString('en-IN') : '—' %></td>
+            <td><span class="badge <%= a.status %>"><%= a.status %></span></td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+
+  </div>
+</body>
+</html>

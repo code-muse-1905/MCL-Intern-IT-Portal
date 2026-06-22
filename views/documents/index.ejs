@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Documents | IT Portal</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <%- include('../partials/navbar') %>
+
+  <div class="page-container">
+    <div class="page-header">
+      <h2>📄 Documents</h2>
+      <a href="/documents/upload" class="btn green">+ Upload Document</a>
+    </div>
+
+    <% if (success.length > 0) { %>
+      <div class="alert success"><%= success %></div>
+    <% } %>
+    <% if (error.length > 0) { %>
+      <div class="alert error"><%= error %></div>
+    <% } %>
+
+    <!-- SEARCH + FILTER -->
+    <form method="GET" action="/documents" style="display:flex; gap:1rem; margin-bottom:1.5rem">
+      <input
+        type="text"
+        name="search"
+        placeholder="🔍 Search by title..."
+        value="<%= search %>"
+        style="padding:0.6rem 1rem; border:1px solid #ddd; border-radius:8px; flex:1"
+      />
+      <select name="category" style="padding:0.6rem 1rem; border:1px solid #ddd; border-radius:8px">
+        <option value="all" <%= category === 'all' ? 'selected' : '' %>>All Categories</option>
+        <option value="policy" <%= category === 'policy' ? 'selected' : '' %>>Policy</option>
+        <option value="manual" <%= category === 'manual' ? 'selected' : '' %>>Manual</option>
+        <option value="report" <%= category === 'report' ? 'selected' : '' %>>Report</option>
+        <option value="other" <%= category === 'other' ? 'selected' : '' %>>Other</option>
+      </select>
+      <button type="submit" class="btn blue">Search</button>
+      <a href="/documents" class="btn" style="background:#f0f0f0; color:#555">Clear</a>
+    </form>
+
+    <table class="table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Title</th>
+          <th>Category</th>
+          <th>Version</th>
+          <th>Uploaded By</th>
+          <th>Department</th>
+          <th>Status</th>
+          <th>Public</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if (documents.length === 0) { %>
+          <tr>
+            <td colspan="9" style="text-align:center; color:#888">No documents found</td>
+          </tr>
+        <% } %>
+        <% documents.forEach((doc, i) => { %>
+          <tr>
+            <td><%= i + 1 %></td>
+            <td><strong><%= doc.title %></strong></td>
+            <td><span class="badge medium"><%= doc.category %></span></td>
+            <td><%= doc.version %></td>
+            <td><%= doc.uploader ? doc.uploader.name : '-' %></td>
+            <td><%= doc.department || '-' %></td>
+            <td>
+              <span class="badge <%= doc.status === 'approved' ? 'available' : doc.status === 'rejected' ? 'critical' : 'medium' %>">
+                <%= doc.status %>
+              </span>
+            </td>
+            <td><%= doc.isPublic ? '✅' : '🔒' %></td>
+            <td>
+              <!-- Download -->
+              <a href="<%= doc.filePath %>" target="_blank" class="btn-sm blue">⬇ Download</a>
+
+              <!-- Approve/Reject — admin/superadmin only, pending docs -->
+              <% if ((user.role === 'superadmin' || user.role === 'admin') && doc.status === 'pending') { %>
+                <form action="/documents/<%= doc.id %>/approve" method="POST" style="display:inline">
+                  <button type="submit" class="btn-sm green">✅ Approve</button>
+                </form>
+                <form action="/documents/<%= doc.id %>/reject" method="POST" style="display:inline">
+                  <button type="submit" class="btn-sm red">❌ Reject</button>
+                </form>
+              <% } %>
+
+              <!-- Delete — admin/superadmin only -->
+              <% if (user.role === 'superadmin' || user.role === 'admin') { %>
+                <form action="/documents/delete/<%= doc.id %>" method="POST" style="display:inline">
+                  <button type="submit" class="btn-sm red" onclick="return confirm('Delete this document?')">Delete</button>
+                </form>
+              <% } %>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+
+</body>
+</html>

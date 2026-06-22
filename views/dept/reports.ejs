@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Department Reports | IT Portal</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+</head>
+<body>
+
+  <%- include('../partials/navbar') %>
+
+  <div class="page-container">
+    <h2>📊 <%= dept %> Department Reports</h2>
+    <p style="color:#888; margin-bottom:2rem">Overview of your department</p>
+
+    <!-- SUMMARY CARDS -->
+    <div class="cards">
+      <div class="card blue">
+        <h3><%= totalUsers %></h3>
+        <p>Total Users</p>
+      </div>
+      <div class="card green">
+        <h3><%= totalAssets %></h3>
+        <p>Total Assets</p>
+      </div>
+      <div class="card red">
+        <h3><%= openTickets %></h3>
+        <p>Open Tickets</p>
+      </div>
+      <div class="card orange">
+        <h3><%= resolvedTickets %></h3>
+        <p>Resolved Tickets</p>
+      </div>
+    </div>
+
+    <!-- CHARTS -->
+    <div class="charts-grid">
+
+      <!-- Asset Status Chart -->
+      <div class="chart-card">
+        <h3>Asset Status</h3>
+        <canvas id="assetChart"></canvas>
+      </div>
+
+      <!-- Ticket Status Chart -->
+      <div class="chart-card">
+        <h3>Ticket Status</h3>
+        <canvas id="ticketChart"></canvas>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    // Asset Status Donut Chart
+    new Chart(document.getElementById('assetChart'), {
+      type: 'doughnut',
+      data: {
+        labels: ['Available', 'Assigned', 'Maintenance'],
+        datasets: [{
+          data: [<%= availableAssets %>, <%= assignedAssets %>, <%= maintenanceAssets %>],
+          backgroundColor: ['#2ecc71', '#667eea', '#f39c12'],
+          borderWidth: 0
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { position: 'bottom' }
+        }
+      }
+    });
+
+    // Ticket Status Donut Chart
+    new Chart(document.getElementById('ticketChart'), {
+      type: 'doughnut',
+      data: {
+        labels: ['Open', 'Resolved'],
+        datasets: [{
+          data: [<%= openTickets %>, <%= resolvedTickets %>],
+          backgroundColor: ['#e74c3c', '#2ecc71'],
+          borderWidth: 0
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { position: 'bottom' }
+        }
+      }
+    });
+  </script>
+
+</body>
+</html>

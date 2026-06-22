@@ -1,0 +1,223 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Asset Details | IT Portal</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <%- include('../partials/navbar') %>
+
+  <div class="page-container">
+
+    <% if (success.length > 0) { %>
+      <div class="alert success"><%= success %></div>
+    <% } %>
+    <% if (error.length > 0) { %>
+      <div class="alert error"><%= error %></div>
+    <% } %>
+
+    <!-- ASSET HEADER -->
+    <div class="asset-header">
+      <div class="asset-header-left">
+        <div class="asset-icon">🖥️</div>
+        <div>
+          <h2><%= asset.name %></h2>
+          <p style="color:#888; font-size:0.9rem">SN: <%= asset.serialNumber || 'N/A' %></p>
+        </div>
+      </div>
+      <div class="asset-header-right">
+        <span class="badge <%= asset.status %>" style="font-size:0.95rem; padding:0.4rem 1rem">
+          <%= asset.status %>
+        </span>
+        <% if (user.role === 'admin' || user.role === 'it_staff') { %>
+          <a href="/assets/<%= asset.id %>/allocate" class="btn green">✓ Allocate</a>
+          <a href="/assets/transfer/<%= asset.id %>" class="btn orange">⇄ Transfer</a>
+          <a href="/assets/maintenance/<%= asset.id %>" class="btn blue">✂ Maintenance</a>
+          <a href="/assets/edit/<%= asset.id %>" class="btn" style="background:#f0f0f0; color:#555">✏ Edit</a>
+        <% } %>
+      </div>
+    </div>
+
+    <!-- ASSET INFO CARD -->
+    <div class="detail-card">
+      <div class="detail-section">
+        <p class="section-label">BASIC INFORMATION</p>
+        <table class="detail-table">
+          <tr>
+            <th>Specifications</th>
+            <td><%= asset.specifications || '—' %></td>
+          </tr>
+          <tr>
+            <th>Unit</th>
+            <td><%= asset.unit || '—' %></td>
+          </tr>
+          <tr>
+            <th>Quantity</th>
+            <td><%= asset.quantity || 1 %></td>
+          </tr>
+          <tr>
+            <th>Storage Location</th>
+            <td><%= asset.storageLocation || '—' %></td>
+          </tr>
+          <tr>
+            <th>Remark</th>
+            <td><%= asset.remark || '—' %></td>
+          </tr>
+        </table>
+      </div>
+
+      <div class="detail-section">
+        <p class="section-label">PURCHASE & ASSIGNMENT</p>
+        <table class="detail-table">
+          <tr>
+            <th>Purchase Date</th>
+            <td><%= asset.purchaseDate || '—' %></td>
+          </tr>
+          <tr>
+            <th>Unit Price</th>
+            <td><%= asset.unitPrice ? '₹' + asset.unitPrice : '—' %></td>
+          </tr>
+          <tr>
+            <th>Service Life</th>
+            <td><%= asset.serviceLife || '—' %></td>
+          </tr>
+          <tr>
+            <th>Department</th>
+            <td><%= asset.department || '—' %></td>
+          </tr>
+          <tr>
+            <th>Assigned To</th>
+            <td><%= asset.assignedUser ? asset.assignedUser.name : '—' %></td>
+          </tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- TABS -->
+    <div class="tabs-container">
+      <div class="tabs">
+        <button class="tab active" onclick="showTab('allocations')">
+          👤 Allocations (<%= allocations.length %>)
+        </button>
+        <button class="tab" onclick="showTab('transfers')">
+          ⇄ Transfers (<%= transfers.length %>)
+        </button>
+        <button class="tab" onclick="showTab('maintenance')">
+          🔧 Maintenance (<%= maintenances.length %>)
+        </button>
+      </div>
+
+      <!-- ALLOCATIONS TAB -->
+      <div id="tab-allocations" class="tab-content active">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Assigned To</th>
+              <th>Department</th>
+              <th>Allocated Date</th>
+              <th>Return Date</th>
+              <th>Status</th>
+              <th>Note</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% if (allocations.length === 0) { %>
+              <tr><td colspan="6" style="text-align:center; color:#888">No allocations found</td></tr>
+            <% } %>
+            <% allocations.forEach(a => { %>
+              <tr>
+                <td><%= a.allocatedUser ? a.allocatedUser.name : '—' %></td>
+                <td><%= a.department || '—' %></td>
+                <td><%= a.allocationDate %></td>
+                <td><%= a.returnDate || '—' %></td>
+                <td><span class="badge <%= a.status %>"><%= a.status %></span></td>
+                <td><%= a.note || '—' %></td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- TRANSFERS TAB -->
+      <div id="tab-transfers" class="tab-content">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>From</th>
+              <th>To</th>
+              <th>Date</th>
+              <th>Reason</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% if (transfers.length === 0) { %>
+              <tr><td colspan="4" style="text-align:center; color:#888">No transfers found</td></tr>
+            <% } %>
+            <% transfers.forEach(t => { %>
+              <tr>
+                <td><%= t.fromUser ? t.fromUser.name : 'Unassigned' %></td>
+                <td><%= t.toUser ? t.toUser.name : '—' %></td>
+                <td><%= t.transferDate %></td>
+                <td><%= t.reason || '—' %></td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- MAINTENANCE TAB -->
+      <div id="tab-maintenance" class="tab-content">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Description</th>
+              <th>Date</th>
+              <th>Cost</th>
+              <th>Performed By</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% if (maintenances.length === 0) { %>
+              <tr><td colspan="5" style="text-align:center; color:#888">No maintenance records found</td></tr>
+            <% } %>
+            <% maintenances.forEach(m => { %>
+              <tr>
+                <td><%= m.description %></td>
+                <td><%= m.maintenanceDate %></td>
+                <td><%= m.cost ? '₹' + m.cost : '—' %></td>
+                <td><%= m.performedBy || '—' %></td>
+                <td><span class="badge <%= m.status %>"><%= m.status %></span></td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- BACK & DELETE -->
+    <div style="display:flex; justify-content:space-between; margin-top:2rem">
+      <a href="/assets" class="btn" style="background:#f0f0f0; color:#555">← Back to Assets</a>
+      <% if (user.role === 'admin') { %>
+        <form action="/assets/delete/<%= asset.id %>" method="POST">
+          <button type="submit" class="btn red" onclick="return confirm('Delete this asset?')">🗑 Delete Asset</button>
+        </form>
+      <% } %>
+    </div>
+
+  </div>
+
+  <script>
+    function showTab(name) {
+      document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      document.getElementById('tab-' + name).classList.add('active');
+      event.target.classList.add('active');
+    }
+  </script>
+
+</body>
+</html>

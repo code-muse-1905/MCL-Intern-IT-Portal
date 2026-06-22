@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Users | IT Portal</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <%- include('../partials/navbar') %>
+
+  <div class="page-container">
+    <div class="page-header">
+      <h2>👥 All Users</h2>
+      <button class="btn blue" onclick="document.getElementById('addUserForm').classList.toggle('hidden')">
+        + Add User
+      </button>
+    </div>
+
+    <% if (success.length > 0) { %>
+      <div class="alert success"><%= success %></div>
+    <% } %>
+    <% if (error.length > 0) { %>
+      <div class="alert error"><%= error %></div>
+    <% } %>
+
+    <!-- ADD USER FORM — hidden by default -->
+    <div id="addUserForm" class="form-card hidden" style="margin-bottom:2rem">
+      <h3 style="margin-bottom:1rem">Add New User</h3>
+      <form action="/superadmin/users/add" method="POST">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Full Name *</label>
+            <input type="text" name="name" placeholder="Full name" required />
+          </div>
+          <div class="form-group">
+            <label>Email *</label>
+            <input type="email" name="email" placeholder="email@mcl.com" required />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Password *</label>
+            <input type="password" name="password" placeholder="Password" required />
+          </div>
+          <div class="form-group">
+            <label>Role *</label>
+            <select name="role" required>
+              <option value="employee">Employee</option>
+              <option value="admin">Department Admin</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Department *</label>
+          <select name="departmentId" required>
+            <option value="">— Select Department —</option>
+            <% departments.forEach(dept => { %>
+              <option value="<%= dept.id %>"><%= dept.name %></option>
+            <% }) %>
+          </select>
+        </div>
+        <div style="display:flex; gap:1rem">
+          <button type="submit" class="btn blue">+ Add User</button>
+          <button type="button" class="btn" style="background:#f0f0f0; color:#555"
+            onclick="document.getElementById('addUserForm').classList.add('hidden')">
+            Cancel
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- USERS TABLE -->
+    <table class="table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Department</th>
+          <th>Role</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if (users.length === 0) { %>
+          <tr>
+            <td colspan="7" style="text-align:center; color:#888">No users found</td>
+          </tr>
+        <% } %>
+        <% users.forEach((u, i) => { %>
+          <tr>
+            <td><%= i + 1 %></td>
+            <td><strong><%= u.name %></strong></td>
+            <td><%= u.email %></td>
+            <td><%= u.department || '-' %></td>
+            <td>
+              <form action="/superadmin/users/<%= u.id %>/role" method="POST" style="display:inline">
+                <select name="role" onchange="this.form.submit()">
+                  <option value="employee" <%= u.role === 'employee' ? 'selected' : '' %>>Employee</option>
+                  <option value="admin" <%= u.role === 'admin' ? 'selected' : '' %>>Dept Admin</option>
+                  <option value="superadmin" <%= u.role === 'superadmin' ? 'selected' : '' %>>Super Admin</option>
+                </select>
+              </form>
+            </td>
+            <td>
+              <span class="badge <%= u.isActive ? 'available' : 'retired' %>">
+                <%= u.isActive ? 'Active' : 'Inactive' %>
+              </span>
+            </td>
+            <td>
+              <form action="/superadmin/users/<%= u.id %>/toggle" method="POST" style="display:inline">
+                <button type="submit" class="btn-sm <%= u.isActive ? 'orange' : 'green' %>">
+                  <%= u.isActive ? 'Deactivate' : 'Activate' %>
+                </button>
+              </form>
+              <form action="/superadmin/users/<%= u.id %>/delete" method="POST" style="display:inline">
+                <button type="submit" class="btn-sm red" onclick="return confirm('Delete this user?')">Delete</button>
+              </form>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+
+</body>
+</html>

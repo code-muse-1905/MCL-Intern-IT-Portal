@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Pending Requests | IT Portal</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <%- include('../partials/navbar') %>
+
+  <div class="page-container">
+    <div class="page-header">
+      <h2>📋 <%= dept %> — Pending Requests</h2>
+    </div>
+
+    <% if (success.length > 0) { %>
+      <div class="alert success"><%= success %></div>
+    <% } %>
+    <% if (error.length > 0) { %>
+      <div class="alert error"><%= error %></div>
+    <% } %>
+
+    <!-- SUMMARY CARDS -->
+    <div class="cards" style="grid-template-columns: repeat(<%= Object.keys(summary).length || 1 %>, 1fr)">
+      <% if (Object.keys(summary).length === 0) { %>
+        <div class="card green">
+          <h3>0</h3>
+          <p>No Pending Requests</p>
+        </div>
+      <% } %>
+      <% Object.keys(summary).forEach(type => { %>
+        <div class="card blue">
+          <h3><%= summary[type] %></h3>
+          <p><%= type %> Requested</p>
+        </div>
+      <% }) %>
+    </div>
+
+    <!-- REQUESTS TABLE -->
+    <table class="table" style="margin-top:1.5rem">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Requested By</th>
+          <th>Asset Type</th>
+          <th>Qty</th>
+          <th>Reason</th>
+          <th>Status</th>
+          <th>Assigned</th>
+          <th>Date</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if (requests.length === 0) { %>
+          <tr>
+            <td colspan="9" style="text-align:center; color:#888">No requests found</td>
+          </tr>
+        <% } %>
+        <% requests.forEach((r, i) => { %>
+          <tr>
+            <td><%= i + 1 %></td>
+            <td><%= r.requester ? r.requester.name : '-' %></td>
+            <td><%= r.assetType %></td>
+            <td><%= r.quantity %></td>
+            <td><%= r.reason || '-' %></td>
+            <td><span class="badge <%= r.status === 'pending' ? 'medium' : r.status === 'rejected' ? 'critical' : 'available' %>"><%= r.status %></span></td>
+            <td><%= r.assignedAsset ? r.assignedAsset.name + ' (' + r.assignedAsset.serialNumber + ')' : '-' %></td>
+            <td><%= new Date(r.createdAt).toLocaleDateString() %></td>
+            <td>
+              <% if (r.status === 'pending') { %>
+                <!-- Approve / Reject -->
+                <form action="/requests/<%= r.id %>/update" method="POST" style="display:inline">
+                  <input type="hidden" name="action" value="approve">
+                  <button type="submit" class="btn-sm green">Approve</button>
+                </form>
+                <form action="/requests/<%= r.id %>/update" method="POST" style="display:inline">
+                  <input type="hidden" name="action" value="reject">
+                  <button type="submit" class="btn-sm red" onclick="return confirm('Reject this request?')">Reject</button>
+                </form>
+              <% } else if (r.status === 'approved') { %>
+                <!-- Assign Asset -->
+                <form action="/requests/<%= r.id %>/update" method="POST" style="display:inline-flex; gap:0.3rem; align-items:center">
+                  <input type="hidden" name="action" value="assign">
+                  <select name="assignedAssetId" required style="padding:0.3rem; border-radius:6px; font-size:0.8rem">
+                    <option value="">Select Asset</option>
+                    <% availableAssets.forEach(a => { %>
+                      <option value="<%= a.id %>"><%= a.name %> (<%= a.serialNumber %>)</option>
+                    <% }) %>
+                  </select>
+                  <button type="submit" class="btn-sm blue">Assign</button>
+                </form>
+              <% } else { %>
+                —
+              <% } %>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+
+</body>
+</html>

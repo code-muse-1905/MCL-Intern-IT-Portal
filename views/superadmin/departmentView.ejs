@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title><%= dept.name %> | IT Portal</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <%- include('../partials/navbar') %>
+
+  <div class="page-container">
+
+    <div class="page-header">
+      <h2>🏢 <%= dept.name %> Department</h2>
+      <div style="display:flex; gap:0.6rem">
+        <a href="/superadmin/departments/<%= dept.id %>/edit" class="btn blue">✏ Edit Department</a>
+        <a href="/superadmin/departments" class="btn" style="background:#f0f0f0; color:#555">← Back</a>
+      </div>
+    </div>
+
+    <% if (success.length > 0) { %>
+      <div class="alert success"><%= success %></div>
+    <% } %>
+
+    <!-- SUMMARY CARDS -->
+    <div class="cards">
+      <div class="card blue">
+        <h3><%= dept.users ? dept.users.length : 0 %></h3>
+        <p>Total Users</p>
+      </div>
+      <div class="card green">
+        <h3><%= assets.length %></h3>
+        <p>Total Assets</p>
+      </div>
+      <div class="card orange">
+        <h3><%= dept.code || '-' %></h3>
+        <p>Department Code</p>
+      </div>
+      <div class="card red">
+        <h3><%= dept.isActive ? 'Active' : 'Inactive' %></h3>
+        <p>Status</p>
+      </div>
+    </div>
+
+    <!-- USERS -->
+    <div class="quick-links" style="margin-top:1rem">
+      <h3>Department Users</h3>
+      <table class="table" style="margin-top:1rem">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if (!dept.users || dept.users.length === 0) { %>
+            <tr><td colspan="5" style="text-align:center; color:#888">No users in this department</td></tr>
+          <% } %>
+          <% dept.users && dept.users.forEach((u, i) => { %>
+            <tr>
+              <td><%= i + 1 %></td>
+              <td><strong><%= u.name %></strong></td>
+              <td><%= u.email %></td>
+              <td><span class="badge <%= u.role %>"><%= u.role %></span></td>
+              <td>
+                <span class="badge <%= u.isActive ? 'available' : 'retired' %>">
+                  <%= u.isActive ? 'Active' : 'Inactive' %>
+                </span>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ASSETS -->
+    <div class="quick-links" style="margin-top:2rem">
+      <h3>Department Assets</h3>
+      <table class="table" style="margin-top:1rem">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Serial Number</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if (assets.length === 0) { %>
+            <tr><td colspan="5" style="text-align:center; color:#888">No assets in this department</td></tr>
+          <% } %>
+          <% assets.forEach((a, i) => { %>
+            <tr>
+              <td><%= i + 1 %></td>
+              <td><%= a.name %></td>
+              <td><%= a.type %></td>
+              <td><%= a.serialNumber || '-' %></td>
+              <td><span class="badge <%= a.status %>"><%= a.status %></span></td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- RECENT TICKETS -->
+    <div class="quick-links" style="margin-top:2rem">
+      <h3>Recent Tickets</h3>
+      <table class="table" style="margin-top:1rem">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Title</th>
+            <th>Priority</th>
+            <th>Status</th>
+            <th>Raised By</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if (tickets.length === 0) { %>
+            <tr><td colspan="5" style="text-align:center; color:#888">No tickets found</td></tr>
+          <% } %>
+          <% tickets.forEach((t, i) => { %>
+            <tr>
+              <td><%= i + 1 %></td>
+              <td><a href="/tickets/<%= t.id %>" style="color:#667eea; font-weight:600"><%= t.title %></a></td>
+              <td><span class="badge <%= t.priority %>"><%= t.priority %></span></td>
+              <td><span class="badge <%= t.status %>"><%= t.status %></span></td>
+              <td><%= t.raisedByUser ? t.raisedByUser.name : '-' %></td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Transfer History | IT Portal</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <%- include('../partials/navbar') %>
+
+  <div class="page-container">
+    <div class="page-header">
+      <h2>🔄 Transfer History</h2>
+    </div>
+
+    <% if (success.length > 0) { %>
+      <div class="alert success"><%= success %></div>
+    <% } %>
+
+    <table class="table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Asset</th>
+          <th>From</th>
+          <th>To</th>
+          <th>Date</th>
+          <th>Reason</th>
+          <th>Transferred By</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if (transfers.length === 0) { %>
+          <tr>
+            <td colspan="7" style="text-align:center">No transfers found</td>
+          </tr>
+        <% } %>
+        <% transfers.forEach((t, i) => { %>
+          <tr>
+            <td><%= i + 1 %></td>
+            <td><%= t.asset ? t.asset.name : '-' %></td>
+            <td><%= t.fromUser ? t.fromUser.name : 'Unassigned' %></td>
+            <td><%= t.toUser ? t.toUser.name : '-' %></td>
+            <td><%= t.transferDate %></td>
+            <td><%= t.reason || '-' %></td>
+            <td><%= t.transferredByUser ? t.transferredByUser.name : '-' %></td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Edit <%= dept.name %> | IT Portal</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <%- include('../partials/navbar') %>
+
+  <div class="page-container">
+    <h2>✏ Edit Department</h2>
+
+    <% if (error.length > 0) { %>
+      <div class="alert error"><%= error %></div>
+    <% } %>
+
+    <div class="form-card">
+      <form action="/superadmin/departments/<%= dept.id %>/edit" method="POST">
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Department Name *</label>
+            <input type="text" name="name" value="<%= dept.name %>" required />
+          </div>
+          <div class="form-group">
+            <label>Code</label>
+            <input type="text" name="code" value="<%= dept.code || '' %>" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Description</label>
+          <input type="text" name="description" value="<%= dept.description || '' %>" />
+        </div>
+
+        <div class="form-group">
+          <label>Department Admin</label>
+          <select name="adminUserId">
+            <option value="">— None Assigned —</option>
+            <% deptUsers.forEach(u => { %>
+              <option value="<%= u.id %>" <%= u.role === 'admin' ? 'selected' : '' %>>
+                <%= u.name %> (<%= u.email %>)
+              </option>
+            <% }) %>
+          </select>
+          <small style="color:#999">Setting a new admin here will demote the current one to employee.</small>
+        </div>
+
+        <div class="form-group">
+          <label>
+            <input type="checkbox" name="isActive" <%= dept.isActive ? 'checked' : '' %> />
+            Department Active
+          </label>
+        </div>
+
+        <div style="display:flex; gap:1rem">
+          <button type="submit" class="btn blue">Save Changes</button>
+          <a href="/superadmin/departments" class="btn" style="background:#f0f0f0; color:#555">Cancel</a>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+</body>
+</html>

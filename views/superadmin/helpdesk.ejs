@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Helpdesk | Super Admin</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <%- include('../partials/navbar') %>
+
+  <div class="page-container">
+    <div class="page-header">
+      <h2>🎫 Helpdesk — All Departments</h2>
+    </div>
+
+    <% if (success.length > 0) { %>
+      <div class="alert success"><%= success %></div>
+    <% } %>
+    <% if (error.length > 0) { %>
+      <div class="alert error"><%= error %></div>
+    <% } %>
+
+    <% if (deptTickets.length === 0) { %>
+      <p style="color:#888">No tickets found</p>
+    <% } %>
+
+    <% deptTickets.forEach(group => { %>
+      <% if (group.tickets.length > 0) { %>
+        <div style="margin-bottom:2.5rem">
+
+          <!-- DEPT HEADER -->
+          <h3 style="margin-bottom:1rem; padding-bottom:0.5rem; border-bottom:2px solid #e0e0e0">
+            🏢 <%= group.deptName %>
+            <span style="font-size:0.85rem; color:#888; font-weight:normal">
+              (<%= group.tickets.length %> ticket<%= group.tickets.length > 1 ? 's' : '' %>)
+            </span>
+          </h3>
+
+          <table class="table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Title</th>
+                <th>Raised By</th>
+                <th>Category</th>
+                <th>Priority</th>
+                <th>Related Asset</th>
+                <th>Files</th>
+                <th>Dept Admin</th>
+                <th>Super Admin</th>
+                <th>Date</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% group.tickets.forEach((t, i) => { %>
+                <tr>
+                  <td><%= i + 1 %></td>
+                  <td><%= t.title %></td>
+                  <td><%= t.raisedByUser ? t.raisedByUser.name : '-' %></td>
+                  <td><%= t.category || '-' %></td>
+                  <td>
+                    <span class="badge <%= t.priority === 'critical' ? 'critical' : t.priority === 'high' ? 'medium' : 'available' %>">
+                      <%= t.priority %>
+                    </span>
+                  </td>
+                  <td>
+                    <%= t.relatedAsset ? t.relatedAsset.name + ' (' + t.relatedAsset.serialNumber + ')' : '-' %>
+                  </td>
+                  <td>
+                    <% if (t.imageUrl) { %>
+                      <a href="<%= t.imageUrl %>" target="_blank">🖼</a>
+                    <% } %>
+                    <% if (t.docUrl) { %>
+                      <a href="<%= t.docUrl %>" target="_blank">📄</a>
+                    <% } %>
+                    <% if (!t.imageUrl && !t.docUrl) { %>-<% } %>
+                  </td>
+                  <td>
+                    <span class="badge <%= t.deptAdminStatus === 'approved' ? 'available' : t.deptAdminStatus === 'rejected' ? 'critical' : 'medium' %>">
+                      <%= t.deptAdminStatus %>
+                    </span>
+                    <% if (t.deptAdminNote) { %>
+                      <br><small style="color:#aaa"><%= t.deptAdminNote %></small>
+                    <% } %>
+                  </td>
+                  <td>
+                    <span class="badge <%= t.superAdminStatus === 'approved' ? 'available' : t.superAdminStatus === 'rejected' ? 'critical' : 'medium' %>">
+                      <%= t.superAdminStatus %>
+                    </span>
+                    <% if (t.superAdminNote) { %>
+                      <br><small style="color:#aaa"><%= t.superAdminNote %></small>
+                    <% } %>
+                  </td>
+                  <td><%= new Date(t.createdAt).toLocaleDateString() %></td>
+                  <td>
+                    <% if (t.deptAdminStatus === 'approved' && t.superAdminStatus === 'pending') { %>
+                      <!-- APPROVE -->
+                      <form action="/superadmin/helpdesk/<%= t.id %>/status" method="POST" style="display:inline">
+                        <input type="hidden" name="status" value="approved">
+                        <input type="hidden" name="note" value="">
+                        <button type="submit" class="btn-sm green">✅ Approve</button>
+                      </form>
+                      <!-- REJECT -->
+                      <form action="/superadmin/helpdesk/<%= t.id %>/status" method="POST" style="display:inline">
+                        <input type="hidden" name="status" value="rejected">
+                        <input type="hidden" name="note" value="">
+                        <button type="submit" class="btn-sm red" onclick="return confirm('Reject this ticket?')">❌ Reject</button>
+                      </form>
+                    <% } else if (t.deptAdminStatus === 'pending') { %>
+                      <span style="color:#888; font-size:0.85rem">⏳ Awaiting Dept Admin</span>
+                    <% } else { %>
+                      <span style="color:#888; font-size:0.85rem">
+                        <%= t.superAdminStatus === 'approved' ? '✅ Resolved' : '❌ Rejected' %>
+                      </span>
+                    <% } %>
+                  </td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+      <% } %>
+    <% }) %>
+  </div>
+
+</body>
+</html>

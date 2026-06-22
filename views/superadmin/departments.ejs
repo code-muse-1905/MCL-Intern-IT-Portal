@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Departments | IT Portal</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <%- include('../partials/navbar') %>
+
+  <div class="page-container">
+    <div class="page-header">
+      <h2>🏢 Department Management</h2>
+      <button class="btn blue" onclick="document.getElementById('addDeptForm').classList.toggle('hidden')">+ Add Department</button>
+    </div>
+
+    <% if (success.length > 0) { %>
+      <div class="alert success"><%= success %></div>
+    <% } %>
+    <% if (error.length > 0) { %>
+      <div class="alert error"><%= error %></div>
+    <% } %>
+
+    <!-- ADD DEPARTMENT FORM (hidden by default) -->
+    <div id="addDeptForm" class="form-card hidden" style="margin-bottom:2rem">
+      <h3 style="margin-bottom:1rem">Add New Department</h3>
+      <form action="/superadmin/departments/add" method="POST">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Department Name *</label>
+            <input type="text" name="name" placeholder="e.g. HR" required />
+          </div>
+          <div class="form-group">
+            <label>Code</label>
+            <input type="text" name="code" placeholder="e.g. HR" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Description</label>
+          <input type="text" name="description" placeholder="Brief description..." />
+        </div>
+        <button type="submit" class="btn blue">+ Add Department</button>
+      </form>
+    </div>
+
+    <!-- DEPARTMENT CARDS -->
+    <div class="dept-grid">
+      <% if (departments.length === 0) { %>
+        <p style="color:#888">No departments found</p>
+      <% } %>
+      <% departments.forEach(dept => { %>
+        <div class="dept-card">
+          <div class="dept-card-top">
+            <div class="dept-icon">🏢</div>
+            <span class="badge <%= dept.isActive ? 'available' : 'retired' %>">
+              <%= dept.isActive ? 'Active' : 'Inactive' %>
+            </span>
+          </div>
+
+          <h3 class="dept-name"><%= dept.name %></h3>
+          <p class="dept-code"><%= dept.code || '-' %></p>
+
+          <div class="dept-stats">
+            <div>
+              <strong><%= dept.users ? dept.users.length : 0 %></strong>
+              <span>Users</span>
+            </div>
+            <div>
+              <strong><%= dept.dataValues.assetCount %></strong>
+              <span>Assets</span>
+            </div>
+          </div>
+
+          <p class="dept-admin">
+            👤 Admin: <%= dept.dataValues.adminEmail || 'Not assigned' %>
+          </p>
+
+          <div class="dept-actions">
+            <a href="/superadmin/departments/<%= dept.id %>" class="btn-sm blue">👁 View</a>
+            <a href="/superadmin/departments/<%= dept.id %>/edit" class="btn-sm" style="background:#f0f0f0; color:#555">✏ Edit</a>
+            <form action="/superadmin/departments/delete/<%= dept.id %>" method="POST" style="display:inline">
+              <button type="submit" class="btn-sm red" onclick="return confirm('Delete this department?')">Delete</button>
+            </form>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+  </div>
+
+</body>
+</html>

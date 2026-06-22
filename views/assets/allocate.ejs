@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Allocate Asset | IT Portal</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <%- include('../partials/navbar') %>
+
+  <div class="page-container">
+
+    <!-- ASSET INFO BAR -->
+    <div class="asset-header" style="margin-bottom:1.5rem">
+      <div class="asset-header-left">
+        <div class="asset-icon">🖥️</div>
+        <div>
+          <h2><%= asset.name %></h2>
+          <p style="color:#888; font-size:0.9rem">SN: <%= asset.serialNumber || 'N/A' %></p>
+        </div>
+      </div>
+    </div>
+
+    <% if (error.length > 0) { %>
+      <div class="alert error"><%= error %></div>
+    <% } %>
+
+    <div class="form-card">
+      <p class="section-label" style="margin-bottom:1.5rem">ALLOCATION DETAILS</p>
+
+      <form action="/assets/<%= asset.id %>/allocate" method="POST">
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Assign To *</label>
+            <select name="userId" required>
+              <option value="">— Select Employee —</option>
+              <% users.forEach(u => { %>
+                <option value="<%= u.id %>"><%= u.name %></option>
+              <% }) %>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Department</label>
+            <select name="department">
+              <option value="">— Select Department —</option>
+              <option value="IT">IT</option>
+              <option value="HR">HR</option>
+              <option value="Finance">Finance</option>
+              <option value="Engineering">Engineering</option>
+              <option value="Operations">Operations</option>
+              <option value="Management">Management</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Allocation Date *</label>
+          <input type="date" name="allocationDate" required />
+        </div>
+
+        <div class="form-group">
+          <label>Note</label>
+          <textarea name="note" placeholder="Any notes..." rows="3"></textarea>
+        </div>
+
+        <div style="display:flex; gap:1rem; margin-top:0.5rem">
+          <button type="submit" class="btn blue">✓ Allocate Asset</button>
+          <a href="/assets/<%= asset.id %>" class="btn" style="background:#f0f0f0; color:#555">Cancel</a>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+</body>
+</html>

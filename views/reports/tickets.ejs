@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Ticket Report | IT Portal</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    @media print {
+      .no-print { display: none !important; }
+      body { background: white; }
+    }
+  </style>
+</head>
+<body>
+  <%- include('../partials/navbar') %>
+  <div class="page-container">
+
+    <div class="page-header no-print">
+      <h2>🎫 Ticket Report</h2>
+      <div style="display:flex; gap:1rem">
+        <a href="/reports" class="btn" style="background:#f0f0f0; color:#555">← Back</a>
+        <button onclick="window.print()" class="btn blue">🖨️ Print / Save PDF</button>
+      </div>
+    </div>
+
+    <!-- FILTER -->
+    <form method="GET" action="/reports/tickets" class="no-print"
+      style="display:flex; gap:1rem; margin-bottom:2rem">
+      <select name="department"
+        style="padding:0.6rem 1rem; border:1px solid #ddd; border-radius:8px">
+        <option value="all" <%= selectedDept === 'all' ? 'selected' : '' %>>All Departments</option>
+        <% departments.forEach(d => { %>
+          <option value="<%= d.name %>" <%= selectedDept === d.name ? 'selected' : '' %>><%= d.name %></option>
+        <% }) %>
+      </select>
+      <button type="submit" class="btn blue">Filter</button>
+      <a href="/reports/tickets" class="btn" style="background:#f0f0f0; color:#555">Clear</a>
+    </form>
+
+    <!-- SUMMARY CARDS -->
+    <div class="cards" style="margin-bottom:2rem">
+      <div class="card blue">
+        <h3><%= totalTickets %></h3>
+        <p>Total Tickets</p>
+      </div>
+      <div class="card red">
+        <h3><%= openTickets %></h3>
+        <p>Open</p>
+      </div>
+      <div class="card orange">
+        <h3><%= inProgressTickets %></h3>
+        <p>In Progress</p>
+      </div>
+      <div class="card green">
+        <h3><%= resolvedTickets %></h3>
+        <p>Resolved</p>
+      </div>
+    </div>
+
+    <p style="color:var(--text-muted); font-size:0.85rem; margin-bottom:1rem; text-align:right">
+      Generated: <%= new Date().toLocaleDateString('en-IN', { day:'numeric', month:'long', year:'numeric' }) %>
+    </p>
+
+    <table class="table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Title</th>
+          <th>Raised By</th>
+          <th>Department</th>
+          <th>Category</th>
+          <th>Priority</th>
+          <th>Dept Admin</th>
+          <th>Super Admin</th>
+          <th>Status</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if (tickets.length === 0) { %>
+          <tr>
+            <td colspan="10" style="text-align:center; color:#888">No tickets found</td>
+          </tr>
+        <% } %>
+        <% tickets.forEach((t, i) => { %>
+          <tr>
+            <td><%= i + 1 %></td>
+            <td><strong><%= t.title %></strong></td>
+            <td><%= t.raisedByUser ? t.raisedByUser.name : '-' %></td>
+            <td><%= t.department || '-' %></td>
+            <td><%= t.category || '-' %></td>
+            <td><span class="badge <%= t.priority === 'critical' ? 'critical' : t.priority === 'high' ? 'medium' : 'available' %>"><%= t.priority %></span></td>
+            <td><span class="badge <%= t.deptAdminStatus === 'approved' ? 'available' : t.deptAdminStatus === 'rejected' ? 'critical' : 'medium' %>"><%= t.deptAdminStatus %></span></td>
+            <td><span class="badge <%= t.superAdminStatus === 'approved' ? 'available' : t.superAdminStatus === 'rejected' ? 'critical' : 'medium' %>"><%= t.superAdminStatus %></span></td>
+            <td><span class="badge <%= t.status %>"><%= t.status %></span></td>
+            <td><%= new Date(t.createdAt).toLocaleDateString('en-IN') %></td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+</body>
+</html>

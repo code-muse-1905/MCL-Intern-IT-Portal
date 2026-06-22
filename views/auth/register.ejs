@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Register | IT Portal</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="auth-body">
+
+  <div class="auth-container">
+    <h2>🖥️ IT Asset Portal</h2>
+    <h3>Create Account</h3>
+
+    <% if (error.length > 0) { %>
+      <div class="alert error"><%= error %></div>
+    <% } %>
+
+    <% if (success.length > 0) { %>
+      <div class="alert success"><%= success %></div>
+    <% } %>
+
+    <form action="/register" method="POST">
+
+      <input type="text" name="name" placeholder="Full Name" required />
+      <input type="email" name="email" placeholder="Email" required />
+      <input type="password" name="password" placeholder="Password" required />
+
+      <select name="role">
+        <option value="employee">Employee</option>
+        <option value="it_staff">IT Staff</option>
+        <option value="manager">Manager</option>
+        <option value="admin">Admin</option>
+      </select>
+
+      <input type="text" name="department" placeholder="Department (optional)" />
+
+      <button type="submit">Register</button>
+    </form>
+
+    <p>Already have an account? <a href="/login">Login here</a></p>
+  </div>
+
+</body>
+</html>

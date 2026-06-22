@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>My Tickets | IT Portal</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <%- include('../partials/navbar') %>
+
+  <div class="page-container">
+    <div class="page-header">
+      <h2>🎫 My Tickets</h2>
+      <a href="/tickets/create" class="btn blue">+ Raise Ticket</a>
+    </div>
+
+    <% if (success.length > 0) { %>
+      <div class="alert success"><%= success %></div>
+    <% } %>
+    <% if (error.length > 0) { %>
+      <div class="alert error"><%= error %></div>
+    <% } %>
+
+    <table class="table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Title</th>
+          <th>Category</th>
+          <th>Priority</th>
+          <th>Related Asset</th>
+          <th>Dept Admin</th>
+          <th>Super Admin</th>
+          <th>Status</th>
+          <th>Files</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if (tickets.length === 0) { %>
+          <tr>
+            <td colspan="10" style="text-align:center; color:#888">No tickets raised yet</td>
+          </tr>
+        <% } %>
+        <% tickets.forEach((t, i) => { %>
+          <tr>
+            <td><%= i + 1 %></td>
+            <td><%= t.title %></td>
+            <td><%= t.category || '-' %></td>
+            <td>
+              <span class="badge <%= t.priority === 'critical' ? 'critical' : t.priority === 'high' ? 'medium' : 'available' %>">
+                <%= t.priority %>
+              </span>
+            </td>
+            <td>
+              <%= t.relatedAsset ? t.relatedAsset.name + ' (' + t.relatedAsset.serialNumber + ')' : '-' %>
+            </td>
+            <td>
+              <span class="badge <%= t.deptAdminStatus === 'approved' ? 'available' : t.deptAdminStatus === 'rejected' ? 'critical' : 'medium' %>">
+                <%= t.deptAdminStatus %>
+              </span>
+              <% if (t.deptAdminNote) { %>
+                <br><small style="color:#888"><%= t.deptAdminNote %></small>
+              <% } %>
+            </td>
+            <td>
+              <span class="badge <%= t.superAdminStatus === 'approved' ? 'available' : t.superAdminStatus === 'rejected' ? 'critical' : 'medium' %>">
+                <%= t.superAdminStatus %>
+              </span>
+              <% if (t.superAdminNote) { %>
+                <br><small style="color:#888"><%= t.superAdminNote %></small>
+              <% } %>
+            </td>
+            <td>
+              <span class="badge <%= t.status === 'resolved' ? 'available' : t.status === 'open' ? 'medium' : 'critical' %>">
+                <%= t.status %>
+              </span>
+            </td>
+            <td>
+              <% if (t.imageUrl) { %>
+                <a href="<%= t.imageUrl %>" target="_blank">🖼 Image</a><br>
+              <% } %>
+              <% if (t.docUrl) { %>
+                <a href="<%= t.docUrl %>" target="_blank">📄 Doc</a>
+              <% } %>
+              <% if (!t.imageUrl && !t.docUrl) { %>
+                -
+              <% } %>
+            </td>
+            <td><%= new Date(t.createdAt).toLocaleDateString() %></td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+
+</body>
+</html>

@@ -70,7 +70,7 @@ app.use('/', reportRoutes);
 sequelize.authenticate()
   .then(() => {
     console.log('✅ Database connected!');
-    return sequelize.sync({ alter: true });
+    return sequelize.sync({ alter: false });
   })
   .then(() => {
     app.listen(process.env.PORT, () => {

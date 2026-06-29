@@ -32,6 +32,12 @@ exports.postCreateTicket = async (req, res) => {
       ? '/uploads/' + req.files.docUrl[0].filename
       : null;
 
+      // Add this before Ticket.create(...)
+if (!category || category === '') {
+  req.flash('error', 'Please select a category');
+  return res.redirect('back');
+}
+
     await Ticket.create({
       title,
       description,

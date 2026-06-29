@@ -41,7 +41,7 @@ exports.postLogin = async (req, res) => {
       department: user.department
     };
 
-    req.flash('success', `Welcome back, ${user.name}!`);
+    //req.flash('success', `Welcome back, ${user.name}!`);
     res.redirect('/dashboard');
 
   } catch (err) {

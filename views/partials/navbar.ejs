@@ -1,37 +1,43 @@
 <nav class="navbar">
   <div class="nav-brand">
-    <img src="/images/mcllogo.jpeg" alt="Logo" class="nav-logo" />
+    <img src="/images/mcllogo.jpeg" alt="MCL Logo" class="nav-logo" />
+    <span class="nav-brand-text">IT Portal</span>
   </div>
   <div class="nav-links">
-    <a href="/profile">👤 <%= user.name %></a>
 
     <% if (user.role === 'superadmin') { %>
-      <a href="/superadmin">Super Admin</a>
-      <a href="/superadmin/departments">Departments</a>
-      <a href="/superadmin/users">Users</a>
-      <a href="/assets">Assets</a>
-      <a href="/tickets">Tickets</a>
-      <a href="/documents">Documents</a>
-      <a href="/superadmin/helpdesk">Helpdesk</a>
-      <a href="/reports">Reports</a>
+      <a href="/superadmin" class="nav-link">Dashboard</a>
+      <a href="/superadmin/departments" class="nav-link">Departments</a>
+      <a href="/superadmin/users" class="nav-link">Users</a>
+      <a href="/assets" class="nav-link">Assets</a>
+      <a href="/tickets" class="nav-link">Tickets</a>
+      <a href="/documents" class="nav-link">Documents</a>
+      <a href="/superadmin/helpdesk" class="nav-link">Helpdesk</a>
+      <a href="/reports" class="nav-link">Reports</a>
 
     <% } else if (user.role === 'admin') { %>
-      <a href="/dashboard">Dashboard</a>
-      <a href="/dept/users">My Dept</a>
-      <a href="/assets">Assets</a>
-      <a href="/tickets">Tickets</a>
-      <a href="/dept/helpdesk">Helpdesk</a>
-      <a href="/documents">Documents</a>
+      <a href="/dashboard" class="nav-link">Dashboard</a>
+      <a href="/dept/users" class="nav-link">My Dept</a>
+      <a href="/assets" class="nav-link">Assets</a>
+      <a href="/tickets" class="nav-link">Tickets</a>
+      <a href="/dept/helpdesk" class="nav-link">Helpdesk</a>
+      <a href="/documents" class="nav-link">Documents</a>
 
     <% } else { %>
-      <a href="/dashboard">Dashboard</a>
-      <a href="/requests">My Requests</a>
-      <a href="/tickets">My Tickets</a>
-      <a href="/documents">Documents</a>
-      <a href="/profile">Profile</a>
+      <a href="/dashboard" class="nav-link">Dashboard</a>
+      <a href="/requests" class="nav-link">My Requests</a>
+      <a href="/tickets" class="nav-link">My Tickets</a>
+      <a href="/documents" class="nav-link">Documents</a>
 
     <% } %>
 
-    <a href="/logout" class="logout">Logout</a>
+    <div class="nav-user">
+      <a href="/profile" class="nav-user-btn">
+        <div class="nav-avatar"><%= user.name.charAt(0).toUpperCase() %></div>
+        <span><%= user.name.split(' ')[0] %></span>
+      </a>
+      <a href="/logout" class="nav-logout">Logout</a>
+    </div>
+
   </div>
 </nav>
